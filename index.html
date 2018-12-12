@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #box{
+            width: 100%;
+            height: 400px;
+            border: solid 1px;
+        }
+        #txt{
+            margin: 20px;
+            width: 20%;
+            border: solid 1px;
+            text-align: center;
+        }
+        p{
+            border: solid 1px;
+        }
+        h4:hover{
+            cursor: pointer;
+        }
+        h3:hover{
+            cursor: pointer;
+
+        }
+        .zs{
+    background: blueviolet;
+        }
+    </style>
+</head>
+<body>
+<h2>心愿墙</h2>
+<textarea rows="10" cols="30" class="nr"></textarea>
+<button id="btn">提交</button>
+<div id="box">
+</div>
+<script src="jq/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    getData();
+    function getData() {
+        $.ajax({
+            url:"/addget",
+            type:"get",
+            success:function (data) {
+               // console.log(data.nr);
+                show(data)
+            }
+        })
+    }
+    $("#btn").click(function () {
+        let obj = {
+             nr:$(".nr").val(),
+        };
+        $.post("/addpost",obj,function (obj) {
+            console.log("数据添加成功",obj);
+            getData();
+        })
+    });
+    function show(arr) {
+        str="";
+        for (let i =0;i<arr.length;i++){
+            str+=`
+            <div>
+            <h4 onclick=dle('${arr[i]._id}')>删除</h4>
+            <p>${arr[i].nr}</p>8
+            <h3 class=${arr[i].statics} onclick=wc('${arr[i]._id}')>√</h3>
+</div>
+            `
+        }
+        $("#box").html(str);
+    }
+    function dle(id) {
+        $.ajax({
+            url:"/dle?id="+id,
+            type:"get",
+            success:function () {
+                getData();
+            }
+        })
+    }
+    function wc(id) {
+$.ajax({
+    url:"/wc?id="+id+"&statics=zs",
+    type:"get",
+    success:function (data){
+        console.log(data);
+        getData();
+    }
+
+})
+    }
+</script>
+</body>
+</html>
